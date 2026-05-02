@@ -1,0 +1,179 @@
+.container {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.authBox {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.infoBox {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  border: 1px solid #e0e0e0;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.value {
+  font-size: 14px;
+  color: #1a1a1a;
+  word-break: break-all;
+}
+
+.code {
+  display: block;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #333;
+  border: 1px solid #ddd;
+  word-break: break-all;
+}
+
+.button {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error {
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.successBox {
+  background: #f0f9ff;
+  padding: 20px;
+  border-radius: 6px;
+  border: 2px solid #e0f2fe;
+}
+
+.successBox h3 {
+  color: #0369a1;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.tokenBox {
+  background: white;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+}
+
+.tokenBox p {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  margin-top: 12px;
+}
+
+.tokenBox p:first-child {
+  margin-top: 0;
+}
+
+.tokenBox strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.tokenCode {
+  display: block;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #333;
+  border: 1px solid #ddd;
+  word-break: break-all;
+  margin-top: 8px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.note {
+  font-size: 12px;
+  color: #666;
+  background: #fffbeb;
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 3px solid #fbbf24;
+}
+
+@media (max-width: 600px) {
+  .authBox {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

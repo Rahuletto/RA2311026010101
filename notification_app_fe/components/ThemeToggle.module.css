@@ -1,0 +1,28 @@
+/* Aligned with Navigation.module.css .themeToggle for a single look app-wide */
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 18px;
+}
+
+.themeToggle:hover {
+  background-color: var(--accent-secondary);
+  border-color: var(--accent-primary);
+}
+
+@media (max-width: 768px) {
+  .themeToggle {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+}
