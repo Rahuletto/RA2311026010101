@@ -19,6 +19,12 @@ export async function fetchNotifications(
   );
 
   const token = getAccessToken();
+  
+  if (!token) {
+    await logAction('frontend', 'error', 'api', 'No access token available - 401 Unauthorized');
+    throw new Error('Authentication required. Please log in.');
+  }
+
   const data = await fetchNotificationsAction(params, token);
 
   await logAction(
