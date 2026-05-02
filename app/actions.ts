@@ -181,7 +181,10 @@ export async function fetchNotificationsAction(
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
+      const detail = (await response.text().catch(() => '')).trim().slice(0, 300);
+      throw new Error(
+        detail ? `API Error: ${response.status} — ${detail}` : `API Error: ${response.status}`,
+      );
     }
 
     const data: NotificationAPIResponse = await response.json();
