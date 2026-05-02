@@ -1,181 +1,110 @@
-# Notification System Design
+# Notification system design
 
-## Overview
-Campus notification platform displaying real-time updates for Placements, Events, and Results with intelligent priority sorting.
+This doc describes how the campus notification UI is supposed to work: placements, events, and results, with a priority view on top of the same API.
 
-## Architecture
+## What it does
 
-### Data Flow
-1. **Fetch**: GET `/evaluation-service/notifications` with query params (limit, page, notification_type)
-2. **Process**: Calculate priority score based on notification type and recency
-3. **Display**: Two views - All Notifications and Priority Inbox
-4. **Track**: Log all user interactions and API calls
+Users see updates from an evaluation service. The app can show everything with paging and filters, or a shorter priority inbox of the most important unread items. Interactions and API calls are logged so you can trace behavior in staging or production.
 
-### Notification Data Model
+## Data flow
+
+1. Load notifications with `GET /evaluation-service/notifications` and query params for limit, page, and optional type.
+2. On the client, assign each row a priority score from its type and age.
+3. Render either the full list (with paging) or the priority inbox (top N unread after sort).
+4. Log fetches, filters, errors, and meaningful UI actions.
+
+## Shape of a notification
+
+Roughly:
+
 ```typescript
-Notification {
-  ID: string (UUID)
-  Type: "Result" | "Placement" | "Event"
-  Message: string
-  Timestamp: ISO datetime string
+interface Notification {
+  ID: string; // UUID
+  Type: "Result" | "Placement" | "Event";
+  Message: string;
+  Timestamp: string; // ISO datetime
 }
 ```
 
-## Priority Algorithm
+## Priority scoring
 
-### Weight Assignment
-- **Placement**: Weight = 3 (highest priority)
-- **Result**: Weight = 2 (medium priority)
-- **Event**: Weight = 1 (lower priority)
+Types get fixed weights: Placement 3, Result 2, Event 1 (placement matters most).
 
-### Priority Score Calculation
+Score formula:
+
 ```
-Priority Score = (Weight × 10) + Recency Score
-Recency Score = (Current Time - Notification Timestamp) in hours (older = lower score)
+priorityScore = (weight * 10) + recencyScore
 ```
 
-### Sorting
-- Notifications sorted by Priority Score (descending)
-- Top n notifications displayed (user configurable: 10, 15, 20)
+`recencyScore` is basically how many hours ago `Timestamp` was. Older rows get a smaller bump, so fresh items float up within the same type.
 
-## Frontend Implementation
+Sort descending by `priorityScore`. The inbox shows the top N rows (N is something like 10, 15, or 20 and should match whatever limit the user picked).
 
-### Pages
-1. **All Notifications Page**
-   - Display all notifications with pagination
-   - Filter by notification type (Event, Result, Placement, All)
-   - Mark notifications as read/unread
-   - Responsive design (desktop + mobile)
+## Frontend layout
 
-2. **Priority Inbox Page**
-   - Display top n most important unread notifications
-   - Configurable limit (10, 15, 20)
-   - Same filtering options as All Notifications
-   - Visual distinction between read and unread
+The shell switches between two views: priority inbox and all notifications. Navigation toggles that mode.
 
-### Components
-- **NotificationList**: Renders list of notifications
-- **NotificationItem**: Individual notification display
-- **FilterControls**: Type and limit filters
-- **PaginationControls**: Page navigation
-- **PriorityInbox**: Priority-sorted view
+All notifications loads pages from the API, lets you filter by type, tracks read and unread on the client, and should stay usable on small screens.
 
-### Features
-- Real-time notification fetching
-- Client-side priority calculation
-- Read/unread state management
-- Responsive UI (vanilla CSS/Material UI)
-- Comprehensive logging integration
-- Error handling and fallbacks
+Priority inbox applies the sort, shows only the top N unread, and reuses the same filtering ideas as the full list where that helps.
 
-## Logging Strategy
+Exact component names in the repo might drift from early mocks; treat this section as the behavior we care about, not a file checklist.
 
-### Log Points
-- **API Fetch**: stack=frontend, level=info, package=api
-- **Component Mount**: stack=frontend, level=debug, package=component
-- **Filter Changes**: stack=frontend, level=info, package=state
-- **Error Events**: stack=frontend, level=error, package=component
-- **User Actions**: stack=frontend, level=info, package=page
+## Logging
 
-### Logging Format
-```typescript
-Log(stack, level, package, message)
-// Example:
-Log("frontend", "info", "api", "Fetching notifications - limit: 10, page: 1")
-Log("frontend", "debug", "component", "PriorityInbox component mounted")
-Log("frontend", "error", "component", "Failed to fetch notifications - Error: 500")
-```
+Use a small helper along the lines of `Log(stack, level, package, message)`:
 
-## Efficiency Considerations
+- API calls: `stack=frontend`, `level=info`, `package=api`
+- Mount / lifecycle noise: `level=debug`, `package=component`
+- Filter or pagination changes: `level=info`, `package=state`
+- Failures: `level=error`, `package=component`
+- Important clicks or navigation: `level=info`, `package=page`
 
-### Top N Maintenance
-- Single pass through sorted array O(n)
-- Memory efficient - only store displayed notifications
-- Recalculate on new data fetch (not continuous polling)
+Do not log tokens, passwords, or raw PII. Enough detail to debug status codes and flow is enough.
 
-### Performance
-- Client-side sorting (avoiding database queries)
-- Pagination for large datasets
-- Lazy loading consideration for future expansion
+## Performance notes
 
-## API Integration
+Sorting is O(n) over the current page or fetched set. No need to poll forever; refetch on mount, when filters change, or when the user changes page. If lists get huge later, you could move sorting server-side or use a heap; for typical campus volumes this is fine.
 
-### Notification API
-**Endpoint**: `GET http://20.207.122.201/evaluation-service/notifications`
+## API
 
-**Query Parameters**:
-- `limit`: Number of notifications per page (10, 15, 20)
-- `page`: Page number for pagination (1-indexed)
-- `notification_type`: Filter by type (Event, Result, Placement)
+**Base URL (example):** `GET http://20.207.122.201/evaluation-service/notifications`
 
-**Response**:
+**Query:**
+
+- `limit`: page size (10 / 15 / 20 or whatever you agree with backend)
+- `page`: 1-based page index
+- `notification_type`: optional filter (Event, Result, or Placement)
+
+**Body shape (typical):**
+
 ```json
 {
   "notifications": [
     {
       "ID": "uuid",
-      "Type": "Result|Placement|Event",
+      "Type": "Result",
       "Message": "string",
-      "Timestamp": "ISO datetime"
+      "Timestamp": "2025-01-01T12:00:00.000Z"
     }
   ]
 }
 ```
 
-## UI/UX Guidelines
+Real deployments should use HTTPS and env-based URLs; the IP above is illustrative.
 
-### Visual Hierarchy
-- Placement notifications prominently displayed
-- Read/unread distinction (bold vs normal)
-- Clear timestamp and type indicators
+## UX expectations
 
-### Responsiveness
-- Mobile: Single column layout, simplified controls
-- Tablet: Two column option
-- Desktop: Full feature set
+Placements should read as more urgent than results or events (weighting handles ranking; styling can reinforce it). Read vs unread should be obvious (weight, opacity, or icon). Show type and time clearly. On errors, show a short message and a way to retry instead of a blank screen.
 
-### Error Handling
-- Graceful degradation on API failure
-- User-friendly error messages
-- Retry mechanisms
+## State
 
-## State Management
+Lists, filters, current page, and read/unread flags live in the browser. Read/unread can persist in `localStorage` until the backend grows a real read model. The notification API stays stateless from the client's perspective aside from auth.
 
-### Local State
-- Current notifications list
-- Filter selections (type, limit)
-- Current page number
-- Read/unread status (client-side only)
+## Auth
 
-### No Backend State
-- All state managed on frontend
-- Read/unread status stored in localStorage
-- Stateless API calls
+Calls expect a valid Bearer token from your registration/auth flow. Guard routes that load notifications the same way you guard the rest of the app.
 
-## Security & Constraints
+## Keeping this doc honest
 
-### API Protection
-- Requires valid Bearer token from registration
-- Protected route validation
-
-### Logging
-- No sensitive data in logs
-- All actions properly tracked
-- Error details logged for debugging
-
-## Maintenance Strategy
-
-### New Notifications
-- Fetch on component mount
-- Refresh on user action (filter change, pagination)
-- No continuous polling (efficient)
-
-### Top N Algorithm
-- Recalculate on each fetch
-- O(n) complexity - suitable for most datasets
-- Could be optimized with heap for larger sets
-
----
-
-**Last Updated**: Stage 2 Frontend Development
-**Status**: Implementation Ready
+Last touched during frontend stage work. When you rename components or change the URL, update this file in the same PR so newcomers are not chasing ghosts.

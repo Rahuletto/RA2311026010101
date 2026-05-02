@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# task
 
-## Getting Started
+Next.js app that hosts the campus notification UI: a priority inbox and a full notifications list, backed by the evaluation service API described in `notification_system_design.md`.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- MUI (Material UI) and Emotion for components and styling
+
+Most of the notification UI sits in one module next to the app routes; the landing view only switches between the priority inbox and the full list.
+
+## Run it locally
+
+Install dependencies once:
+
+```bash
+npm install
+```
+
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Other package managers work too (`pnpm dev`, `yarn dev`, `bun dev`) if you prefer.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+- `npm run dev`: development server with hot reload
+- `npm run build`: production build
+- `npm run start`: production server (run after `build`)
+- `npm run lint`: ESLint with the Next config
 
-To learn more about Next.js, take a look at the following resources:
+## Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Point the app at your real API base URL and auth as your environment expects. The design doc lists example query params and response shapes for notifications; swap in env vars for anything that should not be hardcoded.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
+Build with `npm run build` and host like any Node Next app (Vercel, your own server, etc.). See https://nextjs.org/docs/app/building-your-application/deploying for Next-specific deployment notes.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Docs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For scoring, logging, and API details, read `notification_system_design.md`.
