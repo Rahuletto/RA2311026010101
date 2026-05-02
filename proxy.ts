@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function proxy(request: NextRequest) {
-  const token =
-    request.cookies.get("accessToken")?.value ||
-    (typeof window !== "undefined"
-      ? localStorage.getItem("accessToken")
-      : null);
+/** Paths served from /public must bypass auth — otherwise fetches get an HTML redirect. */
+function isPublicStaticPath(pathname: string) {
+  if (pathname.startsWith("/assets/")) return true;
+  if (pathname === "/favicon.ico") return true;
+  return /\.(?:ico|png|jpg|jpeg|gif|svg|webp|woff2?|ttf|txt|json|xml|webmanifest)$/i.test(
+    pathname
+  );
+}
 
-  if (!token && request.nextUrl.pathname !== "/auth") {
+export function proxy(request: NextRequest) {
+  if (isPublicStaticPath(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
+  // Server-only: localStorage is never available here (previous branch was dead code).
+  const token = request.cookies.get("accessToken")?.value ?? null;
+
+  if (!token && request.nextUrl.pathname !== "/auth" && request.nextUrl.pathname !== "/sign-up") {
     const url = new URL("/auth", request.url);
     return NextResponse.redirect(url);
   }
 
-  if (token && request.nextUrl.pathname === "/auth") {
+  if (token && (request.nextUrl.pathname === "/auth" || request.nextUrl.pathname === "/sign-up")) {
     const url = new URL("/", request.url);
     return NextResponse.redirect(url);
   }

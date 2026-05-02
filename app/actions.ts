@@ -1,9 +1,25 @@
 'use server';
 
+import { cookies } from 'next/headers';
 import type { Notification, NotificationAPIResponse, NotificationQueryParams } from '@/notification_app_fe/types';
 
 const NOTIFICATION_API_URL = 'http://20.207.122.201/evaluation-service/notifications';
 const LOG_API_URL = 'http://20.207.122.201/evaluation-service/logs';
+
+const MOCK_SESSION_MAX_AGE = 60 * 60 * 24 * 7;
+
+/** Sets `accessToken` on the response so `proxy.ts` sees it (document.cookie is unreliable with App Router). */
+export async function commitMockSession(): Promise<string> {
+  const token = `mock-token-${Date.now()}`;
+  const jar = await cookies();
+  jar.set('accessToken', token, {
+    path: '/',
+    maxAge: MOCK_SESSION_MAX_AGE,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  });
+  return token;
+}
 
 function buildQueryString(params: NotificationQueryParams): string {
   const queryParts: string[] = [];

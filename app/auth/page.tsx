@@ -3,22 +3,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { logAction } from '@/app/actions';
-import { useTheme } from '@/notification_app_fe/context/ThemeContext';
-import styles from './AuthPage.module.css';
+import { commitMockSession, logAction } from '@/app/actions';
+import RocketBlast from '@/notification_app_fe/components/RocketBlast';
+import ThemeToggle from '@/notification_app_fe/components/ThemeToggle';
+import styles from './AuthShell.module.css';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     await logAction('frontend', 'info', 'auth', `Login attempt for ${email}`);
     if (email) {
-      localStorage.setItem('accessToken', 'mock-token-' + Date.now());
+      const token = await commitMockSession();
+      localStorage.setItem('accessToken', token);
       await logAction('frontend', 'info', 'auth', 'Login successful');
       router.push('/');
     } else {
@@ -29,10 +30,13 @@ export default function AuthPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.leftPane}>
-        <div className={styles.abstract}></div>
-      </div>
+      <aside className={styles.leftPane} aria-hidden="true">
+        <RocketBlast />
+      </aside>
       <div className={styles.rightPane}>
+        <div className={styles.themeToggleWrap}>
+          <ThemeToggle />
+        </div>
         <div className={styles.content}>
           <h1 className={styles.title}>Sign in to Notifications</h1>
           <p className={styles.subtitle}>Continue with email</p>
@@ -60,13 +64,6 @@ export default function AuthPage() {
             Not on Notifications? <Link href="/sign-up" className={styles.link}>Sign up</Link>
           </p>
         </div>
-        <button
-          onClick={toggleTheme}
-          className={styles.themeToggle}
-          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙' : '☀️'}
-        </button>
       </div>
     </div>
   );
