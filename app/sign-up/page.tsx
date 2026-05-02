@@ -1,29 +1,41 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { commitMockSession, logAction } from '@/app/actions';
+import { logAction, registerEvaluationAccount } from '@/app/actions';
+import { EVALUATION_PROFILE, LS_REGISTERED_NAME } from '@/lib/evaluation-defaults';
 import RocketBlast from '@/notification_app_fe/components/RocketBlast';
 import ThemeToggle from '@/notification_app_fe/components/ThemeToggle';
 import styles from '@/app/auth/AuthShell.module.css';
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<{ clientID: string; clientSecret: string } | null>(null);
+  const [name, setName] = useState('');
+  const [mobileNo, setMobileNo] = useState('');
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await logAction('frontend', 'info', 'auth', `Sign up attempt for ${email}`);
-    if (email) {
-      persistMockAccessToken('mock-token-' + Date.now());
-      await logAction('frontend', 'info', 'auth', 'Sign up successful');
-      router.push('/');
-    } else {
-      await logAction('frontend', 'error', 'auth', 'Sign up failed - empty email');
+    setError(null);
+    await logAction('frontend', 'info', 'auth', `Register attempt for ${EVALUATION_PROFILE.email}`);
+    const result = await registerEvaluationAccount({
+      ...EVALUATION_PROFILE,
+      name: name.trim(),
+      mobileNo: mobileNo.trim(),
+    });
+    if (!result.ok) {
+      setError(result.message);
+      await logAction('frontend', 'error', 'auth', result.message);
+      setLoading(false);
+      return;
     }
+    localStorage.setItem('clientID', result.clientID);
+    localStorage.setItem('clientSecret', result.clientSecret);
+    localStorage.setItem(LS_REGISTERED_NAME, name.trim());
+    setDone({ clientID: result.clientID, clientSecret: result.clientSecret });
+    await logAction('frontend', 'info', 'auth', 'Registration successful');
     setLoading(false);
   };
 
@@ -36,31 +48,65 @@ export default function SignUpPage() {
         <div className={styles.themeToggleWrap}>
           <ThemeToggle />
         </div>
-        <div className={styles.content}>
-          <h1 className={styles.title}>Create an account</h1>
-          <p className={styles.subtitle}>Get started with Notifications</p>
-          <form onSubmit={handleSignUp} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="name@example.com"
-                className={styles.input}
-              />
+        <div className={`${styles.content} ${styles.contentWide}`}>
+          <h1 className={styles.title}>Register</h1>
+          <p className={styles.subtitle}>
+            Evaluation profile (email, roll no., GitHub, access code) is already configured. Enter
+            your display name and mobile — one-time registration; save the client credentials you
+            get back.
+          </p>
+          <p className={styles.profileSummary}>
+            {EVALUATION_PROFILE.email} · {EVALUATION_PROFILE.rollNo} · @{EVALUATION_PROFILE.githubUsername}
+          </p>
+          {error ? <p className={styles.formError}>{error}</p> : null}
+          {done ? (
+            <div className={styles.successCallout}>
+              <strong>Registration successful.</strong> Store these credentials, then sign in.
+              <code>Client ID: {done.clientID}</code>
+              <code>Client secret: {done.clientSecret}</code>
+              <Link href="/auth" className={styles.link} style={{ display: 'inline-block', marginTop: 12 }}>
+                Continue to sign in →
+              </Link>
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={styles.button}
-            >
-              {loading ? 'Creating account...' : 'Sign up'}
-            </button>
-          </form>
+          ) : (
+            <form onSubmit={handleRegister} className={styles.form}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label} htmlFor="su-name">
+                  Your name
+                </label>
+                <input
+                  id="su-name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className={styles.input}
+                  placeholder="As used for evaluation"
+                  autoComplete="name"
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label} htmlFor="su-mobile">
+                  Mobile
+                </label>
+                <input
+                  id="su-mobile"
+                  type="tel"
+                  value={mobileNo}
+                  onChange={(e) => setMobileNo(e.target.value)}
+                  required
+                  className={styles.input}
+                  placeholder="10-digit mobile"
+                  autoComplete="tel"
+                />
+              </div>
+              <button type="submit" disabled={loading} className={styles.button}>
+                {loading ? 'Registering…' : 'Register'}
+              </button>
+            </form>
+          )}
           <p className={styles.footer}>
-            Already have an account? <Link href="/auth" className={styles.link}>Sign in</Link>
+            Already registered? <Link href="/auth" className={styles.link}>Sign in</Link>
           </p>
         </div>
       </div>

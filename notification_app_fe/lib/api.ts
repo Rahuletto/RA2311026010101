@@ -1,13 +1,6 @@
 import type { Notification, NotificationQueryParams } from '../types';
 import { fetchNotificationsAction, logAction } from '@/app/actions';
 
-function getAccessToken(): string {
-  if (typeof window === 'undefined') {
-    return '';
-  }
-  return localStorage.getItem('accessToken') || '';
-}
-
 export async function fetchNotifications(
   params: NotificationQueryParams = {}
 ): Promise<Notification[]> {
@@ -18,23 +11,19 @@ export async function fetchNotifications(
     `Fetching notifications - limit: ${params.limit || 'default'}, page: ${params.page || 1}, type: ${params.notification_type || 'All'}`
   );
 
-  const token = getAccessToken();
-  
-  if (!token) {
-    await logAction('frontend', 'error', 'api', 'No access token available - 401 Unauthorized');
-    throw new Error('Authentication required. Please log in.');
+  try {
+    const data = await fetchNotificationsAction(params);
+    await logAction(
+      'frontend',
+      'info',
+      'api',
+      `Successfully fetched ${data.length} notifications`
+    );
+    return data;
+  } catch (e) {
+    await logAction('frontend', 'error', 'api', `Fetch failed: ${e instanceof Error ? e.message : String(e)}`);
+    throw e instanceof Error ? e : new Error('Failed to fetch notifications');
   }
-
-  const data = await fetchNotificationsAction(params, token);
-
-  await logAction(
-    'frontend',
-    'info',
-    'api',
-    `Successfully fetched ${data.length} notifications`
-  );
-
-  return data;
 }
 
 export function validateNotification(notification: any): notification is Notification {

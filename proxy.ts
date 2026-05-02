@@ -15,7 +15,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Server-only: localStorage is never available here (previous branch was dead code).
-  const token = request.cookies.get("accessToken")?.value ?? null;
+  const token = request.cookies.get("auth_token")?.value ?? null;
 
   if (!token && request.nextUrl.pathname !== "/auth" && request.nextUrl.pathname !== "/sign-up") {
     const url = new URL("/auth", request.url);

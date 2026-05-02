@@ -31,13 +31,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  if (!mounted) {
-    return children;
-  }
-
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div data-theme={theme}>{children}</div>
+      {mounted ? (
+        <div data-theme={theme}>{children}</div>
+      ) : (
+        <div>{children}</div>
+      )}
     </ThemeContext.Provider>
   );
 }
