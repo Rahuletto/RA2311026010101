@@ -2,6 +2,8 @@
 
 Next.js app that hosts the campus notification UI: a priority inbox and a full notifications list, backed by the evaluation service API described in `notification_system_design.md`.
 
+Deployed URL: https://task-marb4n.vercel.app
+
 ## Stack
 
 - Next.js 16 (App Router)
