@@ -7,7 +7,6 @@ Next.js app that hosts the campus notification UI: a priority inbox and a full n
 - Next.js 16 (App Router)
 - React 19
 - TypeScript
-- MUI (Material UI) and Emotion for components and styling
 
 Most of the notification UI sits in one module next to the app routes; the landing view only switches between the priority inbox and the full list.
 
