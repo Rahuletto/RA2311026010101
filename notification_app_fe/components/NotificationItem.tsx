@@ -2,7 +2,7 @@
 
 import type { Notification } from '../types';
 import { memo, useCallback } from 'react';
-import styles from './NotificationItem.module.css';
+import styles from './NotificationCard.module.css';
 
 export interface NotificationItemProps {
   notification: Notification;
@@ -41,30 +41,30 @@ function NotificationItemInner({
             }
           : undefined
       }
-      role={onOpenDetail ? 'button' : undefined}
       tabIndex={onOpenDetail ? 0 : undefined}
+      aria-label={`Priority ${position}: ${notification.Type}. ${notification.Message.slice(0, 100)}`}
     >
       <p className={styles.message}>{notification.Message}</p>
 
-      <div className={styles.line}>
-        <div className={styles.lineStart}>
-          <span className={styles.tag}>{notification.Type}</span>
-          <span className={styles.dim}>·</span>
-          <span className={styles.rank} title="Inbox order">
-            {position}
-          </span>
-          <span className={styles.dim}>·</span>
-          <time className={styles.date} dateTime={notification.Timestamp}>
-            {formattedTime}
-          </time>
-        </div>
+      <div className={styles.meta}>
+        <span className={styles.tag}>{notification.Type}</span>
+        <span className={styles.sep} aria-hidden>
+          ·
+        </span>
+        <span className={styles.rank} title="Inbox order">
+          #{position}
+        </span>
+        <span className={styles.sep} aria-hidden>
+          ·
+        </span>
+        <time className={styles.date} dateTime={notification.Timestamp}>
+          {formattedTime}
+        </time>
       </div>
 
       <div className={styles.footer}>
-        <span>
-          Score {priority.toFixed(2)}
-          <span className={styles.dim}> · </span>
-          Weight {weight}
+        <span className={styles.footerStats}>
+          {priority.toFixed(2)} pts · W{weight}
         </span>
         <code className={styles.mono}>{notification.ID.substring(0, 8)}…</code>
       </div>

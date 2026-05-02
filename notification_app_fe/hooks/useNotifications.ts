@@ -3,7 +3,8 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { NotificationQueryParams, UseNotificationsReturn } from '../types';
 import { fetchAndValidateNotifications, fetchAndValidateNotificationsBeyond } from '../lib/api';
-import { logAction } from '@/app/actions';
+import { isInvalidAuthApiError } from '../lib/authSession';
+import { clearEvaluationSession, logAction } from '@/app/actions';
 
 export function useNotifications(): UseNotificationsReturn {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -24,6 +25,11 @@ export function useNotifications(): UseNotificationsReturn {
       setNotifications(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      if (isInvalidAuthApiError(errorMessage)) {
+        await clearEvaluationSession();
+        window.location.assign('/auth');
+        return;
+      }
       setError(errorMessage);
       await logAction('frontend', 'error', 'hook', `useNotifications: ${errorMessage}`);
     } finally {
@@ -45,6 +51,11 @@ export function useNotifications(): UseNotificationsReturn {
       setNotifications(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      if (isInvalidAuthApiError(errorMessage)) {
+        await clearEvaluationSession();
+        window.location.assign('/auth');
+        return;
+      }
       setError(errorMessage);
       await logAction('frontend', 'error', 'hook', `useNotifications: ${errorMessage}`);
     } finally {

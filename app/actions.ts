@@ -186,6 +186,9 @@ export async function fetchNotificationsAction(
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        jar.delete(AUTH_COOKIE);
+      }
       const detail = (await response.text().catch(() => '')).trim().slice(0, 300);
       throw new Error(
         detail ? `API Error: ${response.status} — ${detail}` : `API Error: ${response.status}`,
