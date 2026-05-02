@@ -1,0 +1,246 @@
+.container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: row;
+  background: var(--bg-primary);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.leftPane {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.rightPane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(24px, 5vw, 64px);
+  padding-top: max(clamp(24px, 5vw, 64px), env(safe-area-inset-top, 0px));
+  padding-bottom: max(clamp(24px, 5vw, 64px), env(safe-area-inset-bottom, 0px));
+  position: relative;
+  max-height: 100dvh;
+  overflow-y: auto;
+}
+
+.themeToggleWrap {
+  position: absolute;
+  top: max(clamp(16px, 3vw, 28px), env(safe-area-inset-top, 0px));
+  right: max(clamp(16px, 3vw, 28px), env(safe-area-inset-right, 0px));
+  z-index: 2;
+}
+
+.content {
+  width: 100%;
+  max-width: 400px;
+  padding: 0;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.contentWide {
+  width: 100%;
+  max-width: 480px;
+  padding: 0;
+}
+
+.formError {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--error);
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 35%, transparent);
+}
+
+.successCallout {
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.successCallout code {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  word-break: break-all;
+  color: var(--accent-primary);
+}
+
+.profileSummary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: -12px 0 8px 0;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.fieldHint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: -4px 0 0 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.input {
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+}
+
+.input:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.button {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.button:hover:not(:disabled) {
+  background: #219b50;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.footer {
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftPane {
+    flex: 0 0 min(36vh, 320px);
+    flex: 0 0 min(36dvh, 320px);
+    min-height: min(36vh, 320px);
+    min-height: min(36dvh, 320px);
+    height: min(36vh, 320px);
+    height: min(36dvh, 320px);
+  }
+
+  .rightPane {
+    flex: 1;
+    justify-content: flex-start;
+    padding-top: max(52px, env(safe-area-inset-top, 0px));
+    align-items: stretch;
+  }
+
+  .content {
+    max-width: none;
+  }
+
+  /* iOS: avoid focus-zoom on email fields */
+  .input {
+    font-size: 16px;
+  }
+
+  .button {
+    min-height: 48px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+}
