@@ -1,41 +1,50 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { logAction, registerEvaluationAccount } from '@/app/actions';
-import { EVALUATION_PROFILE, LS_REGISTERED_NAME } from '@/lib/evaluation-defaults';
-import RocketBlast from '@/notification_app_fe/components/RocketBlast';
-import ThemeToggle from '@/notification_app_fe/components/ThemeToggle';
-import styles from '@/app/auth/AuthShell.module.css';
+import { useState } from "react";
+import Link from "next/link";
+import { logAction, registerEvaluationAccount } from "@/app/actions";
+import {
+  API_NAME,
+  EVALUATION_PROFILE,
+  randomTenDigitMobile,
+} from "@/lib/evaluation-defaults";
+import RocketBlast from "@/notification_app_fe/components/RocketBlast";
+import ThemeToggle from "@/notification_app_fe/components/ThemeToggle";
+import styles from "@/app/auth/AuthShell.module.css";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ clientID: string; clientSecret: string } | null>(null);
-  const [name, setName] = useState('');
-  const [mobileNo, setMobileNo] = useState('');
+  const [done, setDone] = useState<{
+    clientID: string;
+    clientSecret: string;
+  } | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    await logAction('frontend', 'info', 'auth', `Register attempt for ${EVALUATION_PROFILE.email}`);
+    await logAction(
+      "frontend",
+      "info",
+      "auth",
+      `Register attempt for ${EVALUATION_PROFILE.email}`,
+    );
     const result = await registerEvaluationAccount({
       ...EVALUATION_PROFILE,
-      name: name.trim(),
-      mobileNo: mobileNo.trim(),
+      name: API_NAME,
+      mobileNo: randomTenDigitMobile(),
     });
     if (!result.ok) {
       setError(result.message);
-      await logAction('frontend', 'error', 'auth', result.message);
+      await logAction("frontend", "error", "auth", result.message);
       setLoading(false);
       return;
     }
-    localStorage.setItem('clientID', result.clientID);
-    localStorage.setItem('clientSecret', result.clientSecret);
-    localStorage.setItem(LS_REGISTERED_NAME, name.trim());
+    localStorage.setItem("clientID", result.clientID);
+    localStorage.setItem("clientSecret", result.clientSecret);
     setDone({ clientID: result.clientID, clientSecret: result.clientSecret });
-    await logAction('frontend', 'info', 'auth', 'Registration successful');
+    await logAction("frontend", "info", "auth", "Registration successful");
     setLoading(false);
   };
 
@@ -50,63 +59,64 @@ export default function SignUpPage() {
         </div>
         <div className={`${styles.content} ${styles.contentWide}`}>
           <h1 className={styles.title}>Register</h1>
-          <p className={styles.subtitle}>
-            Evaluation profile (email, roll no., GitHub, access code) is already configured. Enter
-            your display name and mobile — one-time registration; save the client credentials you
-            get back.
-          </p>
-          <p className={styles.profileSummary}>
-            {EVALUATION_PROFILE.email} · {EVALUATION_PROFILE.rollNo} · @{EVALUATION_PROFILE.githubUsername}
-          </p>
+
           {error ? <p className={styles.formError}>{error}</p> : null}
           {done ? (
             <div className={styles.successCallout}>
-              <strong>Registration successful.</strong> Store these credentials, then sign in.
+              <strong>Credentials stored locally.</strong> You can sign in on
+              this device.
               <code>Client ID: {done.clientID}</code>
               <code>Client secret: {done.clientSecret}</code>
-              <Link href="/auth" className={styles.link} style={{ display: 'inline-block', marginTop: 12 }}>
-                Continue to sign in →
+              <Link
+                href="/auth"
+                className={styles.link}
+                style={{ display: "inline-block", marginTop: 12 }}
+              >
+                Sign in →
               </Link>
             </div>
           ) : (
             <form onSubmit={handleRegister} className={styles.form}>
               <div className={styles.inputGroup}>
-                <label className={styles.label} htmlFor="su-name">
-                  Your name
+                <label className={styles.label} htmlFor="su-email">
+                  Email
                 </label>
                 <input
-                  id="su-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
+                  id="su-email"
+                  type="email"
+                  value={EVALUATION_PROFILE.email}
+                  disabled
                   className={styles.input}
-                  placeholder="As used for evaluation"
-                  autoComplete="name"
+                  readOnly
                 />
               </div>
               <div className={styles.inputGroup}>
-                <label className={styles.label} htmlFor="su-mobile">
-                  Mobile
+                <label className={styles.label} htmlFor="su-roll">
+                  Roll number
                 </label>
                 <input
-                  id="su-mobile"
-                  type="tel"
-                  value={mobileNo}
-                  onChange={(e) => setMobileNo(e.target.value)}
-                  required
+                  id="su-roll"
+                  type="text"
+                  value={EVALUATION_PROFILE.rollNo}
+                  disabled
                   className={styles.input}
-                  placeholder="10-digit mobile"
-                  autoComplete="tel"
+                  readOnly
                 />
               </div>
-              <button type="submit" disabled={loading} className={styles.button}>
-                {loading ? 'Registering…' : 'Register'}
+              <button
+                type="submit"
+                disabled={loading}
+                className={styles.button}
+              >
+                {loading ? "Registering…" : "Register"}
               </button>
             </form>
           )}
           <p className={styles.footer}>
-            Already registered? <Link href="/auth" className={styles.link}>Sign in</Link>
+            Already registered?{" "}
+            <Link href="/auth" className={styles.link}>
+              Sign in
+            </Link>
           </p>
         </div>
       </div>

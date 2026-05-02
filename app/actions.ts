@@ -31,7 +31,6 @@ export type RegisterEvaluationResult =
   | (EvaluationRegisterPayload & { ok: true; clientID: string; clientSecret: string })
   | { ok: false; message: string };
 
-/** HttpOnly session cookie — matches platform auth pattern; `proxy.ts` checks this name. */
 async function setAuthCookie(token: string) {
   const jar = await cookies();
   jar.set(AUTH_COOKIE, token, {
