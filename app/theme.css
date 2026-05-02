@@ -12,6 +12,18 @@
     --error: #e74c3c;
     --info: #2ecc71;
     --sharp: #ffffff;
+    --notion-border: rgba(55, 53, 47, 0.09);
+    --notion-hover: rgba(55, 53, 47, 0.04);
+    --notion-ui: #787774;
+    --notion-tag-default-bg: rgba(55, 53, 47, 0.06);
+    --notion-tag-placement-bg: rgba(144, 104, 74, 0.14);
+    --notion-tag-placement-fg: #5c4436;
+    --notion-tag-result-bg: rgba(68, 131, 97, 0.14);
+    --notion-tag-result-fg: #2d5f45;
+    --notion-tag-event-bg: rgba(217, 115, 13, 0.14);
+    --notion-tag-event-fg: #8a4a12;
+    --notion-read-stripe: rgba(120, 119, 116, 0.38);
+    --notion-unread-tint: color-mix(in srgb, var(--bg-secondary) 55%, var(--sharp));
 }
 
 [data-theme="dark"] {
@@ -28,6 +40,18 @@
     --warning: #f1c40f;
     --error: #e74c3c;
     --info: #2ecc71;
+    --notion-border: rgba(255, 255, 255, 0.09);
+    --notion-hover: rgba(255, 255, 255, 0.06);
+    --notion-ui: #9b9a97;
+    --notion-tag-default-bg: rgba(255, 255, 255, 0.06);
+    --notion-tag-placement-bg: rgba(208, 170, 140, 0.18);
+    --notion-tag-placement-fg: #e8d4c4;
+    --notion-tag-result-bg: rgba(120, 180, 140, 0.18);
+    --notion-tag-result-fg: #b8dcc8;
+    --notion-tag-event-bg: rgba(230, 160, 90, 0.18);
+    --notion-tag-event-fg: #f0c896;
+    --notion-read-stripe: rgba(255, 255, 255, 0.2);
+    --notion-unread-tint: color-mix(in srgb, var(--bg-secondary) 65%, var(--sharp));
 }
 
 * {

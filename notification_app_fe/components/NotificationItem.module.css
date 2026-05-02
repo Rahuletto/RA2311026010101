@@ -1,0 +1,131 @@
+.item {
+  min-width: 0;
+  height: 100%;
+  padding: 16px;
+  background: var(--sharp);
+  border: 1px solid var(--notion-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.itemInteractive {
+  cursor: pointer;
+}
+
+.itemInteractive:hover {
+  background: var(--notion-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: color-mix(in srgb, var(--notion-border) 120%, var(--text-secondary));
+  transform: translateY(-1px);
+}
+
+.itemInteractive:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+.message {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.003em;
+  color: var(--text-primary);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.lineStart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.tag {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  background: var(--notion-tag-default-bg);
+  color: var(--text-primary);
+}
+
+.item[data-type='Placement'] .tag {
+  background: var(--notion-tag-placement-bg);
+  color: var(--notion-tag-placement-fg);
+}
+
+.item[data-type='Result'] .tag {
+  background: var(--notion-tag-result-bg);
+  color: var(--notion-tag-result-fg);
+}
+
+.item[data-type='Event'] .tag {
+  background: var(--notion-tag-event-bg);
+  color: var(--notion-tag-event-fg);
+}
+
+.dim {
+  color: var(--notion-ui);
+  opacity: 0.85;
+  user-select: none;
+}
+
+.rank {
+  font-variant-numeric: tabular-nums;
+  color: var(--notion-ui);
+}
+
+.date {
+  color: var(--notion-ui);
+  white-space: nowrap;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-top: 2px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--notion-ui);
+}
+
+.mono {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: -0.02em;
+  color: var(--text-secondary);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 640px) {
+  .line {
+    align-items: flex-start;
+  }
+}

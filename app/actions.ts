@@ -42,6 +42,11 @@ async function setAuthCookie(token: string) {
   });
 }
 
+export async function clearEvaluationSession(): Promise<void> {
+  const jar = await cookies();
+  jar.delete(AUTH_COOKIE);
+}
+
 export async function registerEvaluationAccount(
   payload: EvaluationRegisterPayload
 ): Promise<RegisterEvaluationResult> {

@@ -1,0 +1,195 @@
+.container {
+  max-width: min(1280px, 100%);
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px max(20px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px))
+    max(20px, env(safe-area-inset-left, 0px));
+  background: var(--bg-primary);
+  min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.filterButton:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  background: var(--accent-secondary);
+}
+
+.filterButton.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.filterButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 12px;
+  background: #fee5e5;
+  border: 1px solid #f5c6c6;
+  border-radius: 6px;
+  color: #c33;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+[data-theme='dark'] .error {
+  background: #5a2020;
+  border-color: #8b3a3a;
+  color: #ff6b6b;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.notificationsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.paginationButton {
+  padding: 8px 14px;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+  opacity: 0.9;
+  box-shadow: 0 2px 8px rgba(10, 102, 210, 0.2);
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 13px;
+  color: var(--text-secondary);
+  min-width: 100px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px max(12px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px))
+      max(12px, env(safe-area-inset-left, 0px));
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .filterButtons {
+    flex-direction: column;
+  }
+
+  .filterButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .paginationButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .pageInfo {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 14px max(14px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px))
+      max(14px, env(safe-area-inset-left, 0px));
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,131 @@
+.navbar {
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px
+    max(16px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.logo {
+  font-size: 24px;
+  color: var(--accent-primary);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.navLinks {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.navButton:hover:not(.active) {
+  background-color: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+}
+
+.navButton.active {
+  background-color: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.navButton svg {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .navLinks {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .navButton {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-inline: max(12px, env(safe-area-inset-left, 0px))
+      max(12px, env(safe-area-inset-right, 0px));
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .navLinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+  }
+
+  .navButton {
+    font-size: 12px;
+    gap: 4px;
+    padding-inline: 10px;
+  }
+
+  .navButton svg {
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,139 @@
+.container {
+  max-width: min(1280px, 100%);
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px max(20px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px))
+    max(20px, env(safe-area-inset-left, 0px));
+  background: var(--bg-primary);
+  min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.topNButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.topNButton {
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.topNButton:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  background: var(--accent-secondary);
+}
+
+.topNButton.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.topNButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 12px;
+  background: #fee5e5;
+  border: 1px solid #f5c6c6;
+  border-radius: 6px;
+  color: #c33;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+[data-theme='dark'] .error {
+  background: #5a2020;
+  border-color: #8b3a3a;
+  color: #ff6b6b;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.notificationsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px max(12px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px))
+      max(12px, env(safe-area-inset-left, 0px));
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .topNButtons {
+    flex-direction: column;
+  }
+
+  .topNButton {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 14px max(14px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px))
+      max(14px, env(safe-area-inset-left, 0px));
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+}

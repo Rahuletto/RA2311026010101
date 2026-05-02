@@ -1,24 +1,13 @@
 import type { Notification, NotificationQueryParams } from '../types';
 import { fetchNotificationsAction, logAction } from '@/app/actions';
 
+export const NOTIFICATIONS_PAGE_SIZE = 10;
+
 export async function fetchNotifications(
   params: NotificationQueryParams = {}
 ): Promise<Notification[]> {
-  await logAction(
-    'frontend',
-    'info',
-    'api',
-    `Fetching notifications - limit: ${params.limit || 'default'}, page: ${params.page || 1}, type: ${params.notification_type || 'All'}`
-  );
-
   try {
     const data = await fetchNotificationsAction(params);
-    await logAction(
-      'frontend',
-      'info',
-      'api',
-      `Successfully fetched ${data.length} notifications`
-    );
     return data;
   } catch (e) {
     await logAction('frontend', 'error', 'api', `Fetch failed: ${e instanceof Error ? e.message : String(e)}`);
@@ -46,4 +35,48 @@ export async function fetchAndValidateNotifications(
   });
 
   return validated;
+}
+
+/**
+ * Loads enough pages (10 per request) to reach `minCount` items, or until the API returns a short page.
+ */
+export async function fetchAndValidateNotificationsUpTo(
+  minCount: number
+): Promise<Notification[]> {
+  return fetchAndValidateNotificationsBeyond([], minCount);
+}
+
+/**
+ * Appends pages after `existing` until there are at least `minCount` notifications (deduped by ID).
+ */
+export async function fetchAndValidateNotificationsBeyond(
+  existing: Notification[],
+  minCount: number
+): Promise<Notification[]> {
+  const perPage = NOTIFICATIONS_PAGE_SIZE;
+  const target = Math.max(0, Math.ceil(minCount));
+  const merged: Notification[] = [...existing];
+  const seen = new Set(existing.map((n) => n.ID));
+  let page = Math.floor(existing.length / perPage) + 1;
+  const maxPages = 30;
+
+  if (merged.length >= target) return merged;
+
+  while (merged.length < target && page <= maxPages) {
+    const batch = await fetchNotifications({ limit: perPage, page });
+    const validated = batch.filter(validateNotification);
+
+    for (const n of validated) {
+      if (!seen.has(n.ID)) {
+        seen.add(n.ID);
+        merged.push(n);
+        if (merged.length >= target) break;
+      }
+    }
+
+    if (validated.length < perPage) break;
+    page++;
+  }
+
+  return merged;
 }

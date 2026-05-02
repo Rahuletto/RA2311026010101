@@ -63,6 +63,8 @@ export interface UseNotificationsReturn {
   loading: boolean;
   error: string | null;
   fetchNotifications: (params: NotificationQueryParams) => Promise<void>;
+  /** Fetches successive pages (API cap 10 per request) until at least `minCount` unique notifications are loaded. */
+  fetchNotificationsAtLeast: (minCount: number) => Promise<void>;
 }
 
 export interface UsePriorityReturn {
